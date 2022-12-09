@@ -1,4 +1,4 @@
-package io.busservice.busservice;
+package io.busservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

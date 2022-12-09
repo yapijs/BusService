@@ -1,4 +1,4 @@
-package io.busservice.busservice;
+package io.busservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
