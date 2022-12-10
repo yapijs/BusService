@@ -1,5 +1,6 @@
 package io.busservice.ticketprice.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class PriceRequest {
     @NotBlank
     private String to;
 
+    @Valid
     private Passenger[] passengers;
 
     public PriceRequest(String from, String to, Passenger[] passengers) {
