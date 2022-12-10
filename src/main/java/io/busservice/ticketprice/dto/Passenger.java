@@ -13,9 +13,4 @@ public class Passenger {
     @NotNull
     private PassengerType passengerType;
     private int luggageCount;
-
-    public Passenger(PassengerType passengerType, int luggageCount) {
-        this.passengerType = passengerType;
-        this.luggageCount = luggageCount;
-    }
 }

@@ -17,10 +17,4 @@ public class PriceRequest {
 
     @Valid
     private Passenger[] passengers;
-
-    public PriceRequest(String from, String to, Passenger[] passengers) {
-        this.from = from;
-        this.to = to;
-        this.passengers = passengers;
-    }
 }
