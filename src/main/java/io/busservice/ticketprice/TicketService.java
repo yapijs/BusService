@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 public class TicketService {
 
+    private static final BigDecimal LUGGAGE_COST_RATIO = new BigDecimal("0.3");
     private final BasePriceService basePriceService;
     private final TaxRateService taxRateService;
     private static final String CURRENCY = "EUR";
@@ -46,16 +47,29 @@ public class TicketService {
 
     private List<Ticket> calculatePersonPrice(Passenger passenger, BigDecimal basePrice ) {
         List<Ticket> results = new ArrayList<>();
-        BigDecimal ticketCost = getPersonPrice(passenger, basePrice);
+
+        BigDecimal ticketCost = getPersonPrice(passenger.getPassengerType(), basePrice);
         String ticketText = getPersonText(passenger, basePrice, ticketCost);
+
+        BigDecimal luggageCost = getLuggagePrice(passenger.getLuggageCount(), basePrice);
+        String LuggageText = getLuggageText(passenger.getLuggageCount(), basePrice, luggageCost);
+
         results.add(new Ticket(ticketText, ticketCost));
+        results.add(new Ticket(LuggageText, luggageCost));
         return results;
     }
 
-    private BigDecimal getPersonPrice(Passenger passenger, BigDecimal basePrice) {
-        return  passenger.getPassengerType().getPriceMultiplier()
+    private BigDecimal getLuggagePrice(int luggageCount, BigDecimal basePrice) {
+        return BigDecimal.valueOf(luggageCount)
                 .multiply(basePrice)
-                .multiply(taxRateService.getVat().add(BigDecimal.ONE));
+                .multiply(LUGGAGE_COST_RATIO)
+                .multiply(getVatMultiplier());
+    }
+
+    private BigDecimal getPersonPrice(PassengerType passengerType, BigDecimal basePrice) {
+        return  passengerType.getPriceMultiplier()
+                .multiply(basePrice)
+                .multiply(getVatMultiplier());
     }
 
     private String getPersonText(Passenger passenger, BigDecimal basePrice, BigDecimal totalPrice) {
@@ -73,6 +87,29 @@ public class TicketService {
         return formattedText.toString();
     }
 
+    private String getLuggageText(int luggageCount, BigDecimal basePrice, BigDecimal luggageCost) {
+        StringBuilder formattedText = new StringBuilder();
+        if (luggageCount == 0) {
+            formattedText.append("No bags");
+        } else {
+            if (luggageCount == 1) {
+                formattedText.append("1 bag");
+                formattedText.append(" (");
+            } else {
+                formattedText.append(luggageCount).append(" bags");
+                formattedText.append(" (").append(luggageCount).append(" x ");
+            }
+            formattedText.append(currencyFormat(basePrice));
+            formattedText.append(" x ");
+            formattedText.append(percentageFormat(LUGGAGE_COST_RATIO));
+            formattedText.append(" + ");
+            formattedText.append(percentageFormat(taxRateService.getVat()));
+            formattedText.append(") = ");
+            formattedText.append(currencyFormat(luggageCost));
+        }
+        return formattedText.toString();
+    }
+
     private String currencyFormat(BigDecimal n) {
         return n.setScale(2, RoundingMode.HALF_UP) + " " + CURRENCY;
     }
@@ -83,5 +120,9 @@ public class TicketService {
 
     private String capitalize (String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+    }
+
+    private BigDecimal getVatMultiplier() {
+        return taxRateService.getVat().add(BigDecimal.ONE);
     }
 }

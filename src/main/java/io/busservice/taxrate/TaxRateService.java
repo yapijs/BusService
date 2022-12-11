@@ -11,9 +11,4 @@ public class TaxRateService implements Vat{
     public BigDecimal getVat() {
         return new BigDecimal("0.21");
     }
-
-    @Override
-    public BigDecimal getVatMultiplier(BigDecimal amount) {
-        return getVat().add(BigDecimal.ONE);
-    }
 }
