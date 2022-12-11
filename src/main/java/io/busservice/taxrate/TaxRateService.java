@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 @Service
-public class TaxRateService implements Vat{
+public class TaxRateService implements TaxRate {
 
     @Override
     public BigDecimal getVat() {

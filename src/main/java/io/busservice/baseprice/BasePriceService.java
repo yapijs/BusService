@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 @Service
 public class BasePriceService implements BasePrice{
 
-
     @Override
     public BigDecimal getBasePrice(String from, String to) {
         BigDecimal calculatedBasePrice;

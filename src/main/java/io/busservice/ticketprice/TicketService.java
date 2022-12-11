@@ -1,6 +1,8 @@
 package io.busservice.ticketprice;
 
+import io.busservice.baseprice.BasePrice;
 import io.busservice.baseprice.BasePriceService;
+import io.busservice.taxrate.TaxRate;
 import io.busservice.ticketprice.dto.*;
 import io.busservice.taxrate.TaxRateService;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,11 @@ import java.util.List;
 public class TicketService {
 
     private static final BigDecimal LUGGAGE_COST_RATIO = new BigDecimal("0.3");
-    private final BasePriceService basePriceService;
-    private final TaxRateService taxRateService;
+    private final BasePrice basePriceService;
+    private final TaxRate taxRateService;
     private static final String CURRENCY = "EUR";
 
-    public TicketService(BasePriceService basePriceService, TaxRateService taxRateService) {
+    public TicketService(BasePrice basePriceService, TaxRate taxRateService) {
         this.basePriceService = basePriceService;
         this.taxRateService = taxRateService;
     }
