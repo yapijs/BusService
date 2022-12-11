@@ -5,7 +5,9 @@ import io.busservice.baseprice.BasePriceService;
 import io.busservice.taxrate.TaxRate;
 import io.busservice.ticketprice.dto.*;
 import io.busservice.taxrate.TaxRateService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,6 +29,8 @@ public class TicketService {
     }
 
     public PricesDraft calculateTicketPrices(PriceRequest priceRequest) {
+        validateRequest(priceRequest);
+
         BigDecimal basePrice = basePriceService.getBasePrice(priceRequest.getFrom(), priceRequest.getTo());
 
         List<Ticket> listOfTickets = new ArrayList<>();
@@ -45,6 +49,12 @@ public class TicketService {
 
 
         return new PricesDraft(ticketDetails, currencyFormat(totalPriceAllTickets));
+    }
+
+    private void validateRequest(PriceRequest priceRequest) {
+        if (priceRequest.getTo().equalsIgnoreCase(priceRequest.getFrom())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong start or end location");
+        }
     }
 
     private List<Ticket> calculatePersonPrice(Passenger passenger, BigDecimal basePrice ) {
