@@ -1,10 +1,8 @@
 package io.busservice.ticketprice;
 
 import io.busservice.baseprice.BasePrice;
-import io.busservice.baseprice.BasePriceService;
 import io.busservice.taxrate.TaxRate;
 import io.busservice.ticketprice.dto.*;
-import io.busservice.taxrate.TaxRateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,7 +32,7 @@ public class TicketService {
         BigDecimal basePrice = basePriceService.getBasePrice(priceRequest.getFrom(), priceRequest.getTo());
 
         List<Ticket> listOfTickets = new ArrayList<>();
-        
+
         for (Passenger passenger : priceRequest.getPassengers()) {
             List<Ticket> personCosts = calculatePersonPrice(passenger, basePrice);
             listOfTickets.addAll(personCosts);
@@ -57,7 +55,7 @@ public class TicketService {
         }
     }
 
-    private List<Ticket> calculatePersonPrice(Passenger passenger, BigDecimal basePrice ) {
+    private List<Ticket> calculatePersonPrice(Passenger passenger, BigDecimal basePrice) {
         List<Ticket> results = new ArrayList<>();
 
         BigDecimal ticketCost = getPersonPrice(passenger.getPassengerType(), basePrice);
@@ -79,23 +77,21 @@ public class TicketService {
     }
 
     private BigDecimal getPersonPrice(PassengerType passengerType, BigDecimal basePrice) {
-        return  passengerType.getPriceMultiplier()
+        return passengerType.getPriceMultiplier()
                 .multiply(basePrice)
                 .multiply(getVatMultiplier());
     }
 
     private String getPersonText(Passenger passenger, BigDecimal basePrice, BigDecimal totalPrice) {
-        StringBuilder formattedText = new StringBuilder(capitalize(passenger.getPassengerType().toString()));
+        StringBuilder formattedText = new StringBuilder();
+        formattedText.append(capitalize(passenger.getPassengerType().toString()));
         formattedText.append(" (");
         formattedText.append(currencyFormat(basePrice));
         if (!passenger.getPassengerType().equals(PassengerType.ADULT)) {
             formattedText.append(" x ");
             formattedText.append(percentageFormat(passenger.getPassengerType().getPriceMultiplier()));
         }
-        formattedText.append(" + ");
-        formattedText.append(percentageFormat(taxRateService.getVat()));
-        formattedText.append(") = ");
-        formattedText.append(currencyFormat(totalPrice));
+        formattedText.append(appendFormattedVatAndCostText(taxRateService.getVat(), totalPrice));
         return formattedText.toString();
     }
 
@@ -114,10 +110,8 @@ public class TicketService {
             formattedText.append(currencyFormat(basePrice));
             formattedText.append(" x ");
             formattedText.append(percentageFormat(LUGGAGE_COST_RATIO));
-            formattedText.append(" + ");
-            formattedText.append(percentageFormat(taxRateService.getVat()));
-            formattedText.append(") = ");
-            formattedText.append(currencyFormat(luggageCost));
+
+            formattedText.append(appendFormattedVatAndCostText(taxRateService.getVat(), luggageCost));
         }
         return formattedText.toString();
     }
@@ -130,11 +124,20 @@ public class TicketService {
         return NumberFormat.getPercentInstance().format(n);
     }
 
-    private String capitalize (String name) {
+    private String capitalize(String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
     private BigDecimal getVatMultiplier() {
         return taxRateService.getVat().add(BigDecimal.ONE);
+    }
+
+    private StringBuilder appendFormattedVatAndCostText(BigDecimal vat, BigDecimal ticketPrice) {
+        StringBuilder textToAdd = new StringBuilder();
+        textToAdd.append(" + ");
+        textToAdd.append(percentageFormat(vat));
+        textToAdd.append(") = ");
+        textToAdd.append(currencyFormat(ticketPrice));
+        return textToAdd;
     }
 }

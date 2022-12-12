@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -78,9 +77,8 @@ public class TicketServiceTest {
     public void shouldThrowErrorWhenSameStartDestination() {
         PriceRequest priceRequest = new PriceRequest("Riga", "Riga", new Passenger[0]);
 
-        ResponseStatusException thrown = Assertions.assertThrows(ResponseStatusException.class, () -> {
-            ticketService.calculateTicketPrices(priceRequest);
-        });
+        ResponseStatusException thrown = Assertions.assertThrows(ResponseStatusException.class,
+                () -> ticketService.calculateTicketPrices(priceRequest));
 
         Assertions.assertEquals("Wrong start or end location", thrown.getReason());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
