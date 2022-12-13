@@ -8,7 +8,7 @@
 ---
 ### Configuration
 1. Clone this project: `git clone git@github.com:yapijs/BusService.git`
-2. Run the project in console: `./gradlew spring-boot:run`
+2. Run the project in console: `./gradlew run`
 ---
 ### Requirements:
 1. Have JRE/JDK 17 installed.
