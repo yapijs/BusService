@@ -3,7 +3,7 @@
 ---
 ### Project Description
 1. Ticket draft app is a Spring REST API application that calculates bus ticket prices.
-2. It requires API call with ticket and route information. Other data like VAT for current day and route base price (depending on route) are fetched using existing services.
+2. It requires API call with ticket and route information. Other data like VAT for current day and route base price (depending on route) are fetched using default service implementations.
 3. Child passengers receive 50% discount. Luggage price is 30% of base price.
 ---
 ### Configuration
@@ -21,11 +21,35 @@
    * `passangers` - list containing passengers and their luggage count in the following structure:
      * `passengerType` - currently valid values (`adult`, `child`, `pensioner`);
      * `luggageCount` - count of luggage items
-2. This endpoint returns list of strings as ticket information and total price. Example: 
-   * `ticketPrices`
-     * `Child (10.00 EUR x 50% + 21%) = 6.05 EUR`
-     * `2 bags (2 x 10.00 EUR x 30% + 21%) = 7.26 EUR`
-   * `totalPrice: 13.31 EUR`
+   * Example:
+```json
+{
+  "from": "Riga",
+  "to": "Vilnius",
+  "passengers": [
+    {
+      "passengerType": "adult",
+      "luggageCount": 2
+    },
+    {
+      "passengerType": "child",
+      "luggageCount": 1
+    }
+  ]
+}
+```
+  * This endpoint returns list of strings as ticket information and total price. Example: 
+```json
+{
+    "ticketPrices": [
+        "Adult (10.00 EUR + 21%) = 12.10 EUR",
+        "2 bags (2 x 10.00 EUR x 30% + 21%) = 7.26 EUR",
+        "Child (10.00 EUR x 50% + 21%) = 6.05 EUR",
+        "1 bag (10.00 EUR x 30% + 21%) = 3.63 EUR"
+    ],
+    "totalPrice": "29.04 EUR"
+}
+```
 
 ---
 ### Tests
