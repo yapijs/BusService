@@ -1,7 +1,7 @@
 package io.busservice.ticketprice;
 
-import io.busservice.baseprice.BasePrice;
-import io.busservice.taxrate.TaxRate;
+import io.busservice.baseprice.BasePriceService;
+import io.busservice.taxrate.TaxRateService;
 import io.busservice.ticketprice.dto.Passenger;
 import io.busservice.ticketprice.dto.PassengerType;
 import io.busservice.ticketprice.dto.PriceRequest;
@@ -24,10 +24,10 @@ import java.util.List;
 public class TicketServiceTest {
 
     @Mock
-    BasePrice basePriceService;
+    BasePriceService basePriceService;
 
     @Mock
-    TaxRate taxRateService;
+    TaxRateService taxRateService;
 
     @InjectMocks
     TicketService ticketService;
