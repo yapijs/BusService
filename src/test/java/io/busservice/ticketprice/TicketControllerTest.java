@@ -49,7 +49,7 @@ public class TicketControllerTest {
     public void shouldFailOnIncorrectRequestsStartEnd() throws Exception {
         ObjectMapper jsonObjectMapper = new ObjectMapper();
 
-        Passenger passengerAdult = new Passenger(PassengerType.ADULT, 2);;
+        Passenger passengerAdult = new Passenger(PassengerType.ADULT, 2);
         Passenger[] passengers = new Passenger[] { passengerAdult };
         PriceRequest priceRequest1 = new PriceRequest("", "Vilnius", passengers);
         PriceRequest priceRequest2 = new PriceRequest("Riga", "", passengers);

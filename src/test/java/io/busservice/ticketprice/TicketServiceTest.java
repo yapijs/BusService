@@ -69,8 +69,8 @@ public class TicketServiceTest {
                 .getVat();
 
         PricesDraft result = ticketService.calculateTicketPrices(createPriceRequest());
-        Assertions.assertEquals(result.getTotalPrice(), pricesDraft.getTotalPrice());
-        Assertions.assertEquals(result.getTicketPrices(), pricesDraft.getTicketPrices());
+        Assertions.assertEquals(pricesDraft.getTotalPrice(), result.getTotalPrice());
+        Assertions.assertEquals(pricesDraft.getTicketPrices(), result.getTicketPrices());
     }
 
     @Test
